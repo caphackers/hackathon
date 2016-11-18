@@ -22,8 +22,8 @@
 <body>
 
 <section ng-controller="todoCtrl">
-    <form id="todo-form" ng-submit="addTodo()">
-        <input id="new-todo" placeholder="Que devez-vous faire ?" ng-model="newTodo"/>
+    <form id="todo-form" ng-submit="addUrl()">
+        <input id="new-todo" placeholder="URL of an image" ng-model="newUrl"/>
     </form>
     <article ng-show="todos.length">
         <ul id="todo-list">
@@ -31,6 +31,7 @@
                 <div class="view">
                     <input class="mark" type="checkbox" ng-model="todo.completed"/>
                     <span>{{todo.title}}</span>
+                    <span>{{$scope.facedetection}}</span>
                     <span class="close" ng-click="removeTodo(todo)">x</span>
                 </div>
             </li>
@@ -38,6 +39,8 @@
         <input id="mark-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)"/>
         <label class="btn btn-info" for="mark-all">Tout cocher</label>
         <button class="btn btn-danger" ng-click="clearCompletedTodos()">Supprimer les tâches cochées</button>
+
+
     </article>
 </section>
 

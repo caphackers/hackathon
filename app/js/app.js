@@ -7,8 +7,7 @@ angular.module('myApp', [
   'myApp.view2',
   'myApp.version',
   'todoList'
-]).
-config(['$locationProvider', '$routeProvider', function($locationProvider, $routeProvider) {
+]).config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
 
 }]);
 
@@ -17,22 +16,37 @@ config(['$locationProvider', '$routeProvider', function($locationProvider, $rout
  */
 var todoList = angular.module('todoList', []);
 
-todoList.controller('todoCtrl', ['$scope',
-  function ($scope) {
+todoList.controller('todoCtrl', ['$scope', '$http',
+  function ($scope, $http) {
 
     var todos = $scope.todos = [];
 
-    // Ajouter un todo
-    $scope.addTodo = function () {
-      var newTodo = $scope.newTodo.trim();
-      if (!newTodo.length) {
+    $scope.addUrl = function () {
+      var newUrl = $scope.newUrl.trim();
+      var url = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/detect_faces?api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&url="
+          + newUrl + "&version=2016-05-20";
+      $http({
+        method: 'POST',
+        url: url,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      }).then(function successCallback(response) {
+        console.log(response.data.images[0].faces[0]);
+        $scope.facedetection = response
+      }, function errorCallback(response) {
+        // called asynchronously if an error occurs
+        // or server returns response with an error status.
+      });
+      if (!newUrl.length) {
         return;
       }
       todos.push({
-        title: newTodo,
+        title: newUrl,
         completed: false
       });
-      $scope.newTodo = '';
+      $scope.newUrl = '';
     };
 
     $scope.removeTodo = function (todo) {
