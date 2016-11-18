@@ -11,15 +11,13 @@ angular.module('myApp', [
 
 }]);
 
-/**
- * D�claration du module todoList
- */
+
 var todoList = angular.module('todoList', []);
 
 todoList.controller('todoCtrl', ['$scope', '$http',
   function ($scope, $http) {
 
-    var todos = $scope.todos = [];
+    var urls = $scope.urls = [];
 
     $scope.addUrl = function () {
       var newUrl = $scope.newUrl.trim();
@@ -42,24 +40,24 @@ todoList.controller('todoCtrl', ['$scope', '$http',
       if (!newUrl.length) {
         return;
       }
-      todos.push({
+      urls.push({
         title: newUrl,
         completed: false
       });
       $scope.newUrl = '';
     };
 
-    $scope.removeTodo = function (todo) {
-      todos.splice(todos.indexOf(todo), 1);
+    $scope.removeUrls = function (todo) {
+      urls.splice(urls.indexOf(todo), 1);
     };
     $scope.markAll = function (completed) {
-      todos.forEach(function (todo) {
+      urls.forEach(function (todo) {
         todo.completed = !completed;
       });
     };
 
-    $scope.clearCompletedTodos = function () {
-      $scope.todos = todos = todos.filter(function (todo) {
+    $scope.clearCompletedUrls = function () {
+      $scope.urls = urls = urls.filter(function (todo) {
         return !todo.completed;
       });
     };
