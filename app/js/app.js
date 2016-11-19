@@ -39,13 +39,10 @@ myApp.service('fileUpload', ['$http', function ($http) {
         $http.post(uploadUrl, fd, {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
+        }).success(function () {
         })
-
-            .success(function () {
-            })
-
-            .error(function () {
-            });
+        .error(function () {
+        });
     }
 }]);
 
@@ -117,9 +114,6 @@ todoList.controller('todoCtrl', ['$scope', '$http',
 
             var file = $scope.myFile;
 
-            console.log('file is ');
-            console.dir(file);
-
             $http({
                 method: 'GET',
                 url: collectionUrl,
@@ -189,6 +183,34 @@ todoList.controller('todoCtrl', ['$scope', '$http',
 
                 } else {
                     console.log("NO collections")
+                    var collectionName = new FormData();
+                    collectionName.append("name", "test")
+                    $http({
+                        method: 'POST',
+                        url: collectionUrl,
+                        data: collectionName,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    }).then(function successCallback(response) {
+                        var addImageToCollectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections/"
+                            + response.data.collection_id +
+                            "/images?api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&version=2016-05-20";
+                        var data = new FormData();
+                        data.append("image_file", file);
+                        $http({
+                            method: 'POST',
+                            url: addImageToCollectionUrl,
+                            data: data,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        }).then(function successCallback(response) {
+                        }, function errorCallback(response) {
+                        });
+
+                    }, function errorCallback(response) {
+                    });
                 }
             }, function errorCallback(response) {
             });
