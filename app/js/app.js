@@ -151,7 +151,8 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                                         console.log("Insertion");
                                         createCollection = false
                                     }
-                                    if ((createCollection == true) && (j == (response.data.similar_images.length - 1))) {
+                                    if (createCollection == true) {
+                                        createCollection = false;
                                         var collectionName = new FormData();
                                         collectionName.append("name", "test")
                                         $http({
@@ -162,8 +163,23 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                                                 'Accept': 'application/json'
                                             }
                                         }).then(function successCallback(response) {
+                                            var addImageToCollectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections/"
+                                                + response.data.collection_id +
+                                                "/images?api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&version=2016-05-20";
+                                            $http({
+                                                method: 'POST',
+                                                url: addImageToCollectionUrl,
+                                                data: data,
+                                                headers: {
+                                                    'Accept': 'application/json'
+                                                }
+                                            }).then(function successCallback(response) {
+                                            }, function errorCallback(response) {
+                                            });
+
                                         }, function errorCallback(response) {
                                         });
+                                        break;
                                     }
                                 }
                             }
