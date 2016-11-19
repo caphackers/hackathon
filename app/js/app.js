@@ -56,6 +56,8 @@ todoList.controller('todoCtrl', ['$scope', '$http',
 
         $scope.myFile;
 
+        $scope.foundCollection = "";
+
         $scope.addUrl = function () {
 
             var newUrl = $scope.newUrl;
@@ -101,6 +103,7 @@ todoList.controller('todoCtrl', ['$scope', '$http',
         };
 
         $scope.uploadFile = function () {
+
             var collectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections?" +
                 "api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&version=2016-05-20";
 
@@ -143,6 +146,7 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                                 console.log(response.data.similar_images);
                                 for (var j = 0; j < response.data.similar_images.length; j++) {
                                     if (response.data.similar_images[j].score > 0.6) {
+                                        $scope.foundCollection = "Result: A collection is found for the image:  " + collection;
                                         createCollection = false;
                                         var addImageToCollectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections/"
                                             + collection +
@@ -173,6 +177,7 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                                                 'Accept': 'application/json'
                                             }
                                         }).then(function successCallback(response) {
+                                            $scope.foundCollection = "Result: No collection found, the image is added to a new collection :  " + response.data.collection_id;
                                             var addImageToCollectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections/"
                                                 + response.data.collection_id +
                                                 "/images?api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&version=2016-05-20";
@@ -209,6 +214,7 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                             'Accept': 'application/json'
                         }
                     }).then(function successCallback(response) {
+                        $scope.foundCollection = "Result: No collection found, the image is added to a new collection :  " + response.data.collection_id;
                         var addImageToCollectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections/"
                             + response.data.collection_id +
                             "/images?api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&version=2016-05-20";
