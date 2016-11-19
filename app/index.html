@@ -23,28 +23,6 @@
 </head>
 <body>
 
-<!-- <section ng-controller="todoCtrl">
-    <form id="todo-form" ng-submit="addUrl()">
-        <input id="new-todo" placeholder="URL of an image" ng-model="newUrl"/>
-    </form>
-    <article ng-show="urls.length">
-        <ul id="todo-list">
-            <li ng-repeat="todo in urls" ng-class="{completed: todo.completed}">
-                <div class="view">
-                    <input class="mark" type="checkbox" ng-model="todo.completed"/>
-                    <span>{{todo.title}}</span>
-                    <span class="close" ng-click="removeUrls(todo)">x</span>
-                </div>
-            </li>
-        </ul>
-        <input id="mark-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)"/>
-        <label class="btn btn-info" for="mark-all">Tout cocher</label>
-        <button class="btn btn-danger" ng-click="clearCompletedUrls()">Supprimer les tâches cochées</button>
-
-
-    </article>
-</section> -->
-
     <div class="site-wrapper">
 
       <div class="site-wrapper-inner">
@@ -79,12 +57,11 @@
                         <button class="btn btn-danger" ng-click="clearCompletedUrls()">Supprimer les tâches cochées</button>
                     </article>
                     <div>
-                    <label class="btn btn-default btn-file">
-                        Browse Image<input type="file" style="display: none;" file-model="myFile"/>
-                    </label>
+                   <!--  <label class="btn btn-default btn-file"> -->
+                       <input type="file" file-model="myFile"/>
+                    <!-- </label> -->
                         <button class="btn btn-danger" ng-click="uploadFile()">Upload Image</button>
                     </div>
-
                 </section>
             </p>
           </div>
