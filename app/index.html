@@ -42,7 +42,7 @@
                 <p class="lead">
                     <section ng-controller="todoCtrl">
                         <form id="todo-form" ng-submit="addUrl()">
-                            <input id="new-todo" placeholder="URL of an image" ng-model="newUrl"/>
+                            <input id="new-todo" placeholder="Enter an image URL and press Enter" ng-model="newUrl"/>
                         </form>
                         <article ng-show="urls.length">
                             <ul id="todo-list">
@@ -54,11 +54,6 @@
                                     </div>
                                 </li>
                             </ul>
-                            <input id="mark-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)"/>
-                            <label class="btn btn-info" for="mark-all">Tout cocher</label>
-                            <button class="btn btn-danger" ng-click="clearCompletedUrls()">Supprimer les tâches
-                                cochées
-                            </button>
                         </article>
                         <br/>
                         <br/>

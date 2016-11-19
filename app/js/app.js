@@ -78,22 +78,24 @@ todoList.controller('todoCtrl', ['$scope', '$http',
             }).then(function successCallback(response) {
                 console.log(response.data.images[0].faces[0]);
                 $scope.informations = "Collected information: minimum age " + response.data.images[0].faces[0].age.min + " and maximum age "
-                    + response.data.images[0].faces[0].age.max  +" with score "
+                    + response.data.images[0].faces[0].age.max + " with score "
                     + response.data.images[0].faces[0].age.score + " and sexe " + response.data.images[0].faces[0].gender.gender
                     + " with score " + response.data.images[0].faces[0].gender.score;
-                    if (response.data.images[0].faces[0].gender.gender == 'MALE') {
-                        if (response.data.images[0].faces[0].age.min > 1 && response.data.images[0].faces[0].age.min<15) {
-                            $scope.category = "Category: BATMAN";
-                        }else if (response.data.images[0].faces[0].age.min < 90 && response.data.images[0].faces[0].age.min > 50)
-                            $scope.category = "Category: Trump";
+                if (response.data.images[0].faces[0].gender.gender == 'MALE') {
+                    if ((response.data.images[0].faces[0].age.min > 1 || typeof(response.data.images[0].faces[0].age.min) == 'undefined')
+                        && response.data.images[0].faces[0].age.max <= 17) {
+                        $scope.category = "Category: BATMAN";
+                    } else if (response.data.images[0].faces[0].age.min < 90 && response.data.images[0].faces[0].age.min > 50)
+                        $scope.category = "Category: Trump";
 
-                    } else {
-                        if (response.data.images[0].faces[0].age.min > 1 && response.data.images[0].faces[0].age.min<15) {
-                            $scope.category = "Category: Nintendo";
-                        }else if (response.data.images[0].faces[0].age.min < 90 && response.data.images[0].faces[0].age.min  < 44)
-                            $scope.category = "Category: Hillary";
+                } else if (response.data.images[0].faces[0].gender.gender == 'FEMALE') {
+                    if ((response.data.images[0].faces[0].age.min > 1 || typeof(response.data.images[0].faces[0].age.min) == 'undefined')
+                        && response.data.images[0].faces[0].age.max <= 17) {
+                        $scope.category = "Category: Nintendo";
+                    } else if (response.data.images[0].faces[0].age.min < 90 && response.data.images[0].faces[0].age.max > 44)
+                        $scope.category = "Category: Hillary";
 
-                    }
+                }
                 $http({
                     method: 'POST',
                     url: 'https://eu11.salesforce.com/services/apexrest/resAcc',
