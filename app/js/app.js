@@ -1,14 +1,52 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-angular.module('myApp', [
+var myApp = angular.module('myApp', [
     'ngRoute',
     'myApp.view1',
     'myApp.view2',
     'myApp.version',
     'todoList'
-]).config(['$locationProvider', '$routeProvider', function ($locationProvider, $routeProvider) {
+]).config(['$locationProvider', '$routeProvider', '$httpProvider', function ($locationProvider, $routeProvider, $httpProvider) {
+    $httpProvider.defaults.headers.common = {};
+    $httpProvider.defaults.headers.post = {};
+    $httpProvider.defaults.headers.put = {};
+    $httpProvider.defaults.headers.patch = {};
+}]);
 
+
+myApp.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
+
+            element.bind('change', function () {
+                scope.$apply(function () {
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);
+
+myApp.service('fileUpload', ['$http', function ($http) {
+    this.uploadFileToUrl = function (file, uploadUrl) {
+        var fd = new FormData();
+        fd.append('file', file);
+
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        })
+
+            .success(function () {
+            })
+
+            .error(function () {
+            });
+    }
 }]);
 
 
@@ -19,45 +57,13 @@ todoList.controller('todoCtrl', ['$scope', '$http',
 
         var urls = $scope.urls = [];
 
+        $scope.myFile;
+
         $scope.addUrl = function () {
 
             var newUrl = $scope.newUrl;
 
             var apiWatsonKey = "2bf3d9e76fed69e0c6309b47bc40760bb8936da3";
-            var collectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections?api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&name=name&version=2016-05-20";
-
-            $http({
-                method: 'GET',
-                url: collectionUrl,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            }).then(function successCallback(response) {
-                if (response.data.collections.length > 0) {
-                    console.log(response.data.collections);
-                } else {
-                    var collectionName =  Math.random().toString(36).substring(7);
-
-                    var form = new FormData();
-                    form.append("name=name", "");
-
-
-                    $http({
-                        method: 'POST',
-                        url: collectionUrl,
-                        headers: {
-                            'Accept': 'application/json',
-                        },
-                        "data": form
-                    }).then(function successCallback(response) {
-                    }, function errorCallback(response) {
-                    });
-                }
-            }, function errorCallback(response) {
-            });
-
-
             var detectFacesUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/detect_faces?api_key="
                 + apiWatsonKey + "&url="
                 + newUrl + "&version=2016-05-20";
@@ -95,6 +101,83 @@ todoList.controller('todoCtrl', ['$scope', '$http',
             $scope.urls = urls = urls.filter(function (todo) {
                 return !todo.completed;
             });
+        };
+
+        $scope.uploadFile = function () {
+            var collectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections?" +
+                "api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&version=2016-05-20";
+
+            var findSimilarUrl = "";
+            var findSimilarUrlFirstPart = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections/"
+
+            var findSimilarUrlSecondPart = "/find_similar?" +
+                "api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3" +
+                "&limit=1" +
+                "&version=2016-05-20";
+
+            var file = $scope.myFile;
+
+            console.log('file is ');
+            console.dir(file);
+
+            $http({
+                method: 'GET',
+                url: collectionUrl,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(function successCallback(response) {
+                if (response.data.collections.length > 0) {
+                    var createCollection = true;
+                    for (var i = 0; i < response.data.collections.length; i++) {
+                        console.log(response.data.collections[i]);
+                        findSimilarUrl = findSimilarUrlFirstPart + response.data.collections[i].collection_id + findSimilarUrlSecondPart;
+                        var data = new FormData();
+                        data.append("image_file", file);
+                        $http({
+                            method: 'POST',
+                            url: findSimilarUrl,
+                            data: data,
+                            headers: {
+                                'Accept': 'application/json'
+                            }
+                        }).then(function successCallback(response) {
+                            console.log(response.data.similar_images.length);
+                            if (response.data.similar_images.length > 0) {
+                                console.log(response.data.similar_images);
+                                for (var j = 0; j < response.data.similar_images.length; j++) {
+                                    if (response.data.similar_images[j].score > 0.6) {
+                                        console.log("Insertion");
+                                        createCollection = false
+                                    }
+                                    if ((createCollection == true) && (j == (response.data.similar_images.length - 1))) {
+                                        var collectionName = new FormData();
+                                        collectionName.append("name", "test")
+                                        $http({
+                                            method: 'POST',
+                                            url: collectionUrl,
+                                            data: collectionName,
+                                            headers: {
+                                                'Accept': 'application/json'
+                                            }
+                                        }).then(function successCallback(response) {
+                                        }, function errorCallback(response) {
+                                        });
+                                    }
+                                }
+                            }
+                        }, function errorCallback(response) {
+                        });
+                    }
+
+                } else {
+                    console.log("NO collections")
+                }
+            }, function errorCallback(response) {
+            });
+
+
         };
     }
 ]);

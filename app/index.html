@@ -38,9 +38,12 @@
         <input id="mark-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)"/>
         <label class="btn btn-info" for="mark-all">Tout cocher</label>
         <button class="btn btn-danger" ng-click="clearCompletedUrls()">Supprimer les tâches cochées</button>
-
-
     </article>
+    <div>
+        <input type="file" file-model="myFile"/>
+        <button class="btn btn-danger" ng-click="uploadFile()">Upload Image</button>
+    </div>
+
 </section>
 
 <div ng-view></div>
