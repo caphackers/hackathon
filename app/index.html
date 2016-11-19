@@ -13,6 +13,8 @@
     <title>My AngularJS App</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://getbootstrap.com/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://getbootstrap.com/examples/cover/cover.css">
     <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
     <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
     <link rel="stylesheet" href="css/app.css">
@@ -21,7 +23,7 @@
 </head>
 <body>
 
-<section ng-controller="todoCtrl">
+<!-- <section ng-controller="todoCtrl">
     <form id="todo-form" ng-submit="addUrl()">
         <input id="new-todo" placeholder="URL of an image" ng-model="newUrl"/>
     </form>
@@ -38,19 +40,78 @@
         <input id="mark-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)"/>
         <label class="btn btn-info" for="mark-all">Tout cocher</label>
         <button class="btn btn-danger" ng-click="clearCompletedUrls()">Supprimer les tâches cochées</button>
+
+
     </article>
-    <div>
-        <input type="file" file-model="myFile"/>
-        <button class="btn btn-danger" ng-click="uploadFile()">Upload Image</button>
+</section> -->
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">The Cap'hackers</h3>
+            </div>
+          </div>
+
+          <div class="inner cover">
+            <h1 class="cover-heading">Moleface</h1>
+            <p class="lead">
+                <section style="margin-left: 12%;" ng-controller="todoCtrl">
+                    <form id="todo-form" ng-submit="addUrl()">
+                        <input id="new-todo" placeholder="URL of an image" ng-model="newUrl"/>
+                    </form>
+                    <article ng-show="urls.length">
+                        <ul id="todo-list">
+                            <li ng-repeat="todo in urls" ng-class="{completed: todo.completed}">
+                                <div class="view">
+                                    <input class="mark" type="checkbox" ng-model="todo.completed"/>
+                                    <span>{{todo.title}}</span>
+                                    <span class="close" ng-click="removeUrls(todo)">x</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <input id="mark-all" type="checkbox" ng-model="allChecked" ng-click="markAll(allChecked)"/>
+                        <label class="btn btn-info" for="mark-all">Tout cocher</label>
+                        <button class="btn btn-danger" ng-click="clearCompletedUrls()">Supprimer les tâches cochées</button>
+                    </article>
+                    <div>
+                    <label class="btn btn-default btn-file">
+                        Browse Image<input type="file" style="display: none;" file-model="myFile"/>
+                    </label>
+                        <button class="btn btn-danger" ng-click="uploadFile()">Upload Image</button>
+                    </div>
+
+                </section>
+            </p>
+          </div>
+
+          <div class="mastfoot">
+            <div class="inner">
+              <p>by Capgemini France FSSBU - 2016.</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
 
-</section>
-
 <div ng-view></div>
-
+<style>
+.inner {
+    color:black;
+}
+</style>
 <!-- In production use:
 <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="http://getbootstrap.com/dist/js/bootstrap.min.js"></script>
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="js/app.js"></script>
