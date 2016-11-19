@@ -57,6 +57,8 @@ todoList.controller('todoCtrl', ['$scope', '$http',
         $scope.myFile;
 
         $scope.foundCollection = "";
+        $scope.informations = "";
+        $scope.category = "";
 
         $scope.addUrl = function () {
 
@@ -75,6 +77,41 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                 }
             }).then(function successCallback(response) {
                 console.log(response.data.images[0].faces[0]);
+                $scope.informations = "Collected information: minimum age " + response.data.images[0].faces[0].age.min + " and maximum age "
+                    + response.data.images[0].faces[0].age.max  +" with score "
+                    + response.data.images[0].faces[0].age.score + " and sexe " + response.data.images[0].faces[0].gender.gender
+                    + " with score " + response.data.images[0].faces[0].gender.score;
+                    if (response.data.images[0].faces[0].gender.gender == 'MALE') {
+                        if (response.data.images[0].faces[0].age.min > 1 && response.data.images[0].faces[0].age.min<15) {
+                            $scope.category = "Category: BATMAN";
+                        }else if (response.data.images[0].faces[0].age.min < 90 && response.data.images[0].faces[0].age.min > 50)
+                            $scope.category = "Category: Trump";
+
+                    } else {
+                        if (response.data.images[0].faces[0].age.min > 1 && response.data.images[0].faces[0].age.min<15) {
+                            $scope.category = "Category: Nintendo";
+                        }else if (response.data.images[0].faces[0].age.min < 90 && response.data.images[0].faces[0].age.min  < 44)
+                            $scope.category = "Category: Hillary";
+
+                    }
+                $http({
+                    method: 'POST',
+                    url: 'https://eu11.salesforce.com/services/apexrest/resAcc',
+                    data: {
+                        "uniqueID": "uniqueIdIdz",
+                        "sex": response.data.images[0].faces[0].gender.gender,
+                        "age": response.data.images[0].faces[0].age.min,
+                        "accuracy": response.data.images[0].faces[0].age.score
+                    },
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 00D0Y000000akoN!AREAQOEciwfejiEZBnqI3ho0_1op3OXEvGUaF.rSuMyEyLuC6rwgM8Xx.x2NGuwSSfSBF48mrHFTE26ueye1NOnuYDo20YZ7'
+                    }
+                }).then(function successCallback(response) {
+
+                }, function errorCallback(response) {
+                });
             }, function errorCallback(response) {
             });
             if (!newUrl.length) {
@@ -145,7 +182,7 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                             if (response.data.similar_images.length > 0) {
                                 console.log(response.data.similar_images);
                                 for (var j = 0; j < response.data.similar_images.length; j++) {
-                                    if (response.data.similar_images[j].score > 0.6) {
+                                    if (response.data.similar_images[j].score > 0.5) {
                                         $scope.foundCollection = "Result: A collection is found for the image:  " + collection;
                                         createCollection = false;
                                         var addImageToCollectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections/"
