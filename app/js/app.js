@@ -41,8 +41,8 @@ myApp.service('fileUpload', ['$http', function ($http) {
             headers: {'Content-Type': undefined}
         }).success(function () {
         })
-        .error(function () {
-        });
+            .error(function () {
+            });
     }
 }]);
 
@@ -128,6 +128,7 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                         console.log(response.data.collections[i]);
                         findSimilarUrl = findSimilarUrlFirstPart + response.data.collections[i].collection_id + findSimilarUrlSecondPart;
                         var data = new FormData();
+                        var collection = response.data.collections[i].collection_id;
                         data.append("image_file", file);
                         $http({
                             method: 'POST',
@@ -142,8 +143,23 @@ todoList.controller('todoCtrl', ['$scope', '$http',
                                 console.log(response.data.similar_images);
                                 for (var j = 0; j < response.data.similar_images.length; j++) {
                                     if (response.data.similar_images[j].score > 0.6) {
-                                        console.log("Insertion");
-                                        createCollection = false
+                                        createCollection = false;
+                                        var addImageToCollectionUrl = "https://watson-api-explorer.mybluemix.net/visual-recognition/api/v3/collections/"
+                                            + collection +
+                                            "/images?api_key=2bf3d9e76fed69e0c6309b47bc40760bb8936da3&version=2016-05-20";
+                                        var data = new FormData();
+                                        data.append("image_file", file);
+                                        $http({
+                                            method: 'POST',
+                                            url: addImageToCollectionUrl,
+                                            data: data,
+                                            headers: {
+                                                'Accept': 'application/json'
+                                            }
+                                        }).then(function successCallback(response) {
+                                        }, function errorCallback(response) {
+                                        });
+                                        break;
                                     }
                                     if (createCollection == true) {
                                         createCollection = false;
